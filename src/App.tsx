@@ -16,13 +16,11 @@ type Trainee = {
 };
 
 function App() {
-  // State variables
   const [trainees, setTrainees] = useState<Trainee[]>([]);
-  const [search, setSearch] = useState(""); // For search bar input
-  const [selected, setSelected] = useState<Trainee | null>(null); // Selected trainee for modal
-  const [darkMode, setDarkMode] = useState(false); // Toggle for light/dark mode
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Trainee | null>(null);
+  const [darkMode, setDarkMode] = useState(false);
 
-  // Fetch data from Spring Boot API
   useEffect(() => {
     axios
       .get("https://trainee-backend-suun.onrender.com/api/trainees")
@@ -30,18 +28,16 @@ function App() {
       .catch((err) => console.error("Failed to fetch trainees", err));
   }, []);
 
-  // ESC key to close the modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setSelected(null); // Close the modal
+        setSelected(null);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Filter logic for search
   const filtered = trainees.filter((t) =>
     t.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -58,31 +54,54 @@ function App() {
         position: "relative",
       }}
     >
-      {/* Dark Mode Toggle Button */}
-      <button
-        onClick={() => setDarkMode(!darkMode)}
+      {/* Jarvis Header */}
+      <div
         style={{
-          position: "absolute",
-          top: "1rem",
-          right: "1rem",
-          padding: "0.5rem 1rem",
-          backgroundColor: darkMode ? "#eee" : "#222",
-          color: darkMode ? "#222" : "#eee",
-          border: "none",
-          borderRadius: "6px",
-          fontWeight: "bold",
-          cursor: "pointer",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: darkMode ? "#1a1a1a" : "#ffe5e5",
+          padding: "1rem 2rem",
+          borderRadius: "10px",
+          marginBottom: "2rem",
         }}
       >
-        {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
-      </button>
+        {/* Placeholder Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <img
+            src="/jarvis.webp"
+            alt="Jarvis Logo"
+            style={{
+              height: "40px",
+              objectFit: "contain",
+            }}
+          />
+          <h2 style={{ margin: 0, color: "white" }}></h2>
+        </div>
 
-      {/* App Title */}
+        {/* Theme Toggle */}
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "white",
+            color: "#b30000",
+            border: "none",
+            borderRadius: "6px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
+        </button>
+      </div>
+
+      {/* Title */}
       <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>
         Trainee Profile Showcase
       </h1>
 
-      {/* Search Bar */}
+      {/* Search */}
       <div
         style={{
           display: "flex",
@@ -92,7 +111,7 @@ function App() {
       >
         <input
           type="text"
-          placeholder="🔍 Search..."
+          placeholder="🔍 Search by name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
@@ -106,7 +125,7 @@ function App() {
         />
       </div>
 
-      {/* Grid of Trainee Cards */}
+      {/* Cards */}
       <div
         style={{
           display: "grid",
@@ -117,11 +136,9 @@ function App() {
         {filtered.map((t) => (
           <div
             key={t.id}
-            tabIndex={0} //
+            tabIndex={0}
             onClick={() => setSelected(t)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") setSelected(t); // open on enter
-            }}
+            onKeyDown={(e) => e.key === "Enter" && setSelected(t)}
             style={{
               border: "1px solid #e0e0e0",
               borderRadius: "10px",
@@ -131,7 +148,6 @@ function App() {
               boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
               cursor: "pointer",
               textAlign: "center",
-              transition: "all 0.2s ease",
             }}
           >
             <img
@@ -145,8 +161,8 @@ function App() {
                 marginBottom: "1rem",
               }}
             />
-            <h2 style={{ margin: 0 }}>{t.name}</h2>
-            <p style={{ margin: "0.25rem 0", fontWeight: "bold" }}>{t.role}</p>
+            <h2>{t.name}</h2>
+            <p style={{ fontWeight: "bold", margin: "0.5rem 0" }}>{t.role}</p>
             <p>
               <strong>Skills:</strong>
               <br />
@@ -156,8 +172,8 @@ function App() {
               style={{
                 marginTop: "1rem",
                 padding: "0.5rem 1rem",
-                backgroundColor: darkMode ? "#ddd" : "#0a2351",
-                color: darkMode ? "#000" : "#fff",
+                backgroundColor: "#b30000",
+                color: "#fff",
                 border: "none",
                 borderRadius: "6px",
                 fontWeight: "bold",
@@ -169,7 +185,7 @@ function App() {
         ))}
       </div>
 
-      {/* Modal Popup for Selected Trainee */}
+      {/* Modal */}
       {selected && (
         <div
           onClick={() => setSelected(null)}
@@ -189,7 +205,7 @@ function App() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              backgroundColor: darkMode ? "#1e1e1e" : "white",
+              backgroundColor: darkMode ? "#1e1e1e" : "#fff",
               color: darkMode ? "#fff" : "#000",
               borderRadius: "10px",
               padding: "2rem",
@@ -214,12 +230,13 @@ function App() {
             <p>
               <strong>Projects:</strong> {selected.projects}
             </p>
+
             <button
               style={{
                 marginTop: "1rem",
                 padding: "0.5rem 1rem",
-                backgroundColor: "#0a2351",
-                color: "white",
+                backgroundColor: "#b30000",
+                color: "#fff",
                 border: "none",
                 borderRadius: "6px",
                 fontWeight: "bold",
@@ -227,7 +244,7 @@ function App() {
               }}
               onClick={() => alert("Resume download coming soon!")}
             >
-              Download resume
+              Download Resume
             </button>
 
             <button
@@ -235,7 +252,7 @@ function App() {
               style={{
                 marginTop: "1.5rem",
                 padding: "0.5rem 1rem",
-                backgroundColor: darkMode ? "#ddd" : "#0a2351",
+                backgroundColor: darkMode ? "#ddd" : "#b30000",
                 color: darkMode ? "#000" : "#fff",
                 border: "none",
                 borderRadius: "6px",
