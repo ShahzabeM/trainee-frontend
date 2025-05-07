@@ -25,7 +25,7 @@ function App() {
   // Fetch data from Spring Boot API
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/trainees")
+      .get("https://trainee-backend.onrender.com/api/trainees")
       .then((res) => setTrainees(res.data))
       .catch((err) => console.error("Failed to fetch trainees", err));
   }, []);
