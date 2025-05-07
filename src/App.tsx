@@ -227,7 +227,7 @@ function App() {
               }}
               onClick={() => alert("Resume download coming soon!")}
             >
-              Download Resume
+              Download resume
             </button>
 
             <button
